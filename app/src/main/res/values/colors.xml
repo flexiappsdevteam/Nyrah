@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#D8116C</color>
+    <color name="colorPrimary2">#A3084F</color>
+    <color name="colorPrimary3">#8f1b7c</color>
+    <color name="colorPrimaryDark">#444242</color>
+    <color name="colorAccent">#444242</color>
+    <color name="colorPrimaryDark2">#792F8E</color>
+
+
+    <color name="black">#c1000000</color>
+    <color name="white">#ffffff</color>
+
+    <color name="grayDark">#C1141414</color>
+
+    <color name="black_overlay">#66000000</color>
+    <color name="black2">#290B01</color>
+
+    <color name="fontColor">#d63a3a</color>
+
+    <color name="preferencePrimary">#07638F</color>
+
+    <color name="toggle">#6aac3a</color>
+    <color name="green">#1C8F08</color>
+    <color name="greenTransparent">#60156307</color>
+    <color name="green2">#07D67C</color>
+
+
+    <color name="boot_blue">#563D7C</color>
+
+    <!--    TRANSPARENT-->
+    <color name="transparent">#00ffffff</color>
+    <color name="gray_transparent">#95525151</color>
+    <color name="white_transparent">#95FFFDFD</color>
+    <color name="colorPrimary_transparent">#86D8116C</color>
+    <color name="colorPrimary2_transparent">#A3A3084F</color>
+    <color name="colorPrimary3_transparent">#958F1B7C</color>
+    <color name="colorPrimaryDark_transparent">#92444242</color>
+    <color name="colorAccent_transparent">#88444242</color>
+
+
+    <color name="orange">#F4682A</color>
+    <color name="rose">#D8939B</color>
+    <color name="gray">#D4D4D4</color>
+    <color name="yellow">#FCC208</color>
+    <color name="crimson">#ef343f</color>
+    <color name="crimson_dark">#93151d</color>
+    <color name="crimson_dark_transparent">#a493151d</color>
+
+    <color name="dim_gray">#3e3e3e</color>
+    <color name="gold">#fac40d</color>
+    <color name="light_red">#ea0c04</color>
+    <color name="lighter_red">#e77671</color>
+    <color name="orange2">#e64a19</color>
+    <color name="gray2">#455a64</color>
+    <color name="login_blue_dark">#5E2AAA</color>
+    <color name="login_blue_light">#8C58DA</color>
+
+    <color name="drawer_bg">#24292E</color>
+    <color name="drawer_selected_color">#CF5135</color>
+</resources>

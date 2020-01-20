@@ -1,0 +1,42 @@
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- The bottom layer is red color rectangle with green border. -->
+    <item>
+        <shape android:shape="rectangle">
+
+            <corners
+                android:bottomLeftRadius="380dp"
+                android:bottomRightRadius="0dp"
+                android:topLeftRadius="380dp"
+                android:topRightRadius="0dp" />
+            <solid android:color="@color/colorPrimary" />
+            <padding
+                android:left="0dp"
+                android:right="50dp" />
+            <size
+                android:width="100dp"
+                android:height="100dp" />
+        </shape>
+    </item>
+    <!-- The top layer is an image. -->
+    <item>
+        <shape android:shape="rectangle">
+
+            <corners
+                android:bottomLeftRadius="380dp"
+                android:bottomRightRadius="0dp"
+                android:topLeftRadius="380dp"
+                android:topRightRadius="0dp" />
+            <solid android:color="@color/colorAccent" />
+            <stroke
+                android:width="5dp"
+                android:color="@color/colorAccent" />
+            <padding
+                android:bottom="15dp"
+                android:right="15dp" />
+            <size
+                android:width="100dp"
+                android:height="100dp" />
+        </shape>
+    </item>
+
+</layer-list>

@@ -1,0 +1,57 @@
+<resources>
+    <string name="app_name">Nyrah</string>
+    <string name="app_secondary_name">Nyrah</string>
+    <string name="busiensstype_spinner">Business type</string>
+
+    <string name="welcome">Welcome</string>
+    <string name="login">LOGIN</string>
+    <string name="enter_your_pin">Enter your PIN</string>
+    <string name="enter_your_phoneNumber">Enter your Phone number</string>
+    <string name="phone_number">Phone number</string>
+    <string name="enter_otp">Enter OTP</string>
+    <string name="et_line">____</string>
+    <string name="verify_otp">Verify via OTP</string>
+    <string name="add_user_success_message">User Added</string>
+    <string name="enter_user_details">Enter User details</string>
+    <string name="verify">Verify</string>
+    <string name="set_pin">Set PIN : </string>
+    <string name="confirm_pin">Confirm PIN : </string>
+    <string name="add_user">Add user</string>
+    <string name="enter_product_key">Enter Product key</string>
+    <string name="product_key_error">You have entered an invalid key !</string>
+    <string name="forgot_password">Forgot password</string>
+    <string name="invalid_pin">Invalid PIN entered</string>
+
+    <string name="title_home">Home</string>
+    <string name="title_dashboard">Dashboard</string>
+    <string name="title_notifications">Notifications</string>
+
+    <string name="et_hint_business_title">Business title</string>
+    <string name="et_hint_business_type">Business type : </string>
+    <string name="et_hint_business_administrator_name">Name of the administrator</string>
+    <string name="et_hint_business_phoneNumber">Phone number</string>
+    <string name="et_hint_web_address">Web address</string>
+
+    <string name="submit">Submit</string>
+    <string name="reset_application">Reset application</string>
+    <string name="sign_up">SignUp</string>
+    <string name="new_user">New user</string>
+
+    <string name="name">Name</string>
+    <string name="address">Address</string>
+    <string name="email">Email address</string>
+
+    <string name="number_zero">0</string>
+    <string name="number_one">1</string>
+    <string name="number_two">2</string>
+    <string name="number_three">3</string>
+    <string name="number_four">4</string>
+    <string name="number_five">5</string>
+    <string name="number_six">6</string>
+    <string name="number_seven">7</string>
+    <string name="number_eight">8</string>
+    <string name="number_nine">9</string>
+    <string name="btn_clear">Clear</string>
+    <string name="btn_backspace">Delete</string>
+
+</resources>

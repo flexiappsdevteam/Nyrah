@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="8dp">
+
+    <EditText
+        android:id="@+id/password_field"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="10sp"
+        android:layout_marginBottom="10sp"
+        android:backgroundTint="@color/white"
+        android:enabled="false"
+        android:fontFamily="@font/questrial_regular"
+        android:hint="____"
+        android:inputType="numberPassword"
+        android:letterSpacing=".2"
+        android:maxLength="4"
+        android:textAlignment="center"
+        android:textColor="@color/gray2"
+        android:textSize="40sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/errorTV"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fontFamily="@font/questrial_regular"
+        android:gravity="center"
+        android:text="@string/invalid_pin"
+        android:textColor="@color/md_red_600"
+        android:textStyle="bold"
+        android:visibility="invisible" />
+
+    <TableLayout
+        android:id="@+id/keyboard"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:background="@color/white_transparent"
+        android:gravity="center"
+        android:orientation="vertical">
+
+
+        <TableRow style="@style/keyboard_row">
+
+            <TextView
+                android:id="@+id/t9_key_1"
+                style="@style/keyboard_number_button"
+                android:text="@string/number_one" />
+
+            <TextView
+                android:id="@+id/t9_key_2"
+                style="@style/keyboard_number_button"
+                android:text="@string/number_two" />
+
+            <TextView
+                android:id="@+id/t9_key_3"
+                style="@style/keyboard_number_button"
+                android:text="@string/number_three" />
+        </TableRow>
+
+        <TableRow style="@style/keyboard_row">
+
+            <TextView
+                android:id="@+id/t9_key_4"
+                style="@style/keyboard_number_button"
+                android:text="@string/number_four" />
+
+            <TextView
+                android:id="@+id/t9_key_5"
+                style="@style/keyboard_number_button"
+                android:text="@string/number_five" />
+
+            <TextView
+                android:id="@+id/t9_key_6"
+                style="@style/keyboard_number_button"
+                android:text="@string/number_six" />
+        </TableRow>
+
+        <TableRow style="@style/keyboard_row">
+
+            <TextView
+                android:id="@+id/t9_key_7"
+                style="@style/keyboard_number_button"
+                android:text="@string/number_seven" />
+
+            <TextView
+                android:id="@+id/t9_key_8"
+                style="@style/keyboard_number_button"
+                android:text="@string/number_eight" />
+
+            <TextView
+                android:id="@+id/t9_key_9"
+                style="@style/keyboard_number_button"
+                android:text="@string/number_nine" />
+        </TableRow>
+
+        <TableRow style="@style/keyboard_row">
+
+            <TextView
+                android:id="@+id/t9_key_clear"
+                style="@style/keyboard_button"
+                android:text="@string/btn_clear"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+
+            <TextView
+                android:id="@+id/t9_key_0"
+                style="@style/keyboard_number_button"
+                android:text="@string/number_zero" />
+
+            <TextView
+                android:id="@+id/t9_key_backspace"
+                style="@style/keyboard_button"
+                android:text="@string/btn_backspace"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+        </TableRow>
+    </TableLayout>
+</LinearLayout>
+
