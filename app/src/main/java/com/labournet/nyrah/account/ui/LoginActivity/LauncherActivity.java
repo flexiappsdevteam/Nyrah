@@ -184,6 +184,7 @@ public class LauncherActivity extends BaseActivity {
                                 eachElement.getElementsByTagName("name").item(0).getTextContent()));
                     }
                 }
+                businessTypesFromLauncher.add(new BusinessType("hint", "Select"));
                 return true;
             } else {
                 return false;

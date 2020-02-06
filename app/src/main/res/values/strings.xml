@@ -8,6 +8,9 @@
     <string name="enter_your_pin">Enter your PIN</string>
     <string name="enter_your_phoneNumber">Enter your Phone number</string>
     <string name="phone_number">Phone number</string>
+    <string name="business_phone_number">Business Phone number</string>
+    <string name="user_phone_number">User Phone number</string>
+
     <string name="enter_otp">Enter OTP</string>
     <string name="et_line">____</string>
     <string name="verify_otp">Verify via OTP</string>
@@ -40,6 +43,8 @@
     <string name="name">Name</string>
     <string name="address">Address</string>
     <string name="email">Email address</string>
+    <string name="business_email">Business Email address</string>
+    <string name="user_email">User Email address</string>
 
     <string name="number_zero">0</string>
     <string name="number_one">1</string>

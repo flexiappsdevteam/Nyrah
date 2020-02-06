@@ -20,8 +20,8 @@ import com.labournet.nyrah.R;
 import com.labournet.nyrah.Utils.BaseActivity;
 import com.labournet.nyrah.Utils.KeyboardView;
 import com.labournet.nyrah.Utils.KeyboardViewCallBack;
-import com.labournet.nyrah.Utils.NyrahSingleton;
 import com.labournet.nyrah.Utils.NetworkChangeReceiver;
+import com.labournet.nyrah.Utils.NyrahSingleton;
 import com.labournet.nyrah.Utils.UserSessionManager;
 import com.labournet.nyrah.account.interfaces.LoginCallBacks;
 import com.labournet.nyrah.account.model.Login;
@@ -148,7 +148,6 @@ public class LoginActivity extends BaseActivity implements LoginCallBacks, Keybo
         Login login = new Login(mobileNumber, pin);
         SignInRequest(login);
     }
-
 
     @Override
     public void onPhoneNumberOKLoginCallBack(String phoneNumber) {
@@ -344,7 +343,16 @@ public class LoginActivity extends BaseActivity implements LoginCallBacks, Keybo
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
+        if (backPressedTime + 2000 > System.currentTimeMillis()) {
+            super.onBackPressed();
+            finish();
+            return;
+
+        } else {
+            backToast = Toast.makeText(getBaseContext(), "Press again to exit", Toast.LENGTH_SHORT);
+            backToast.show();
+            backPressedTime = System.currentTimeMillis();
+        }
     }
 
     @Override

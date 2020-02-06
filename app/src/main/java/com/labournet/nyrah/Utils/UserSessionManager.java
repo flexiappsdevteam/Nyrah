@@ -108,7 +108,6 @@ public class UserSessionManager {
     public void saveBusinessInfo(Business business) {
         editor.putString(BUSINESS_TITLE, business.getName());
         editor.putString(BUSINESS_TYPE, business.getType());
-        editor.putString(BUSINESS_ADMINISTRATOR_NAME, business.getAdminName());
         editor.putString(BUSINESS_PHONE_NUMBER, business.getPhoneNumber());
         editor.putString(BUSINESS_EMAIL, business.getEmailAddress());
         editor.putString(BUSINESS_POSTAL_ADDRESS, business.getPostalAddress());
@@ -168,10 +167,6 @@ public class UserSessionManager {
     public void saveProjectIdAndName(String projID, String projName) {
         editor.putString(PROJECT_ID, projID);
         editor.putString(PROJECT_NAME, projName);
-    }
-
-    public void setBusinessAdministratorName(String businessAdministratorName) {
-        editor.putString(BUSINESS_ADMINISTRATOR_NAME, businessAdministratorName);
     }
 
     public String getProjectId() {

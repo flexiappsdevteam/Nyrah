@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
 import android.text.Editable;
-import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,6 +18,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -28,6 +28,7 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import com.labournet.nyrah.R;
+import com.labournet.nyrah.Utils.EnlivenTextInputLayout;
 import com.labournet.nyrah.Utils.MaskWatcher;
 import com.labournet.nyrah.account.interfaces.SignUpCallBacks;
 import com.labournet.nyrah.account.model.User;
@@ -40,10 +41,10 @@ public class AddUserFragment extends Fragment {
     private LinearLayout rootView;
     private Button saveButton;
 
-    private EditText userFormNameET;
-    private EditText userFormPhoneNumberET;
-    private EditText userFormEmailET;
-    private EditText userFormDesignationET;
+    private EnlivenTextInputLayout userFormNameET;
+    private EnlivenTextInputLayout userFormPhoneNumberET;
+    private EnlivenTextInputLayout userFormEmailET;
+    private EnlivenTextInputLayout userFormAddressET;
     private EditText userFormNewPIN_ET;
     private EditText userFormConfirmPIN_ET;
 
@@ -57,8 +58,11 @@ public class AddUserFragment extends Fragment {
     private Button sendOTPButton;
     private Button otpVerifyButton;
 
+    private ScrollView userFormScrollView;
+
 
     private TextView userAddedTV;
+    private TextView PIN_errorTV;
 
     private String phoneNumber;
     private String phNosFromDevice;
@@ -75,8 +79,9 @@ public class AddUserFragment extends Fragment {
         @Override
         public void run() {
             titleTV.setVisibility(View.GONE);
-            userFormContainer.setVisibility(View.VISIBLE);
-            userFormPhoneNumberET.setText(phoneNumber);
+            userFormScrollView.setVisibility(View.VISIBLE);
+            userFormNameET.requestFocus();
+            userFormPhoneNumberET.getEditText().setText(phoneNumber);
         }
     };
 
@@ -100,17 +105,60 @@ public class AddUserFragment extends Fragment {
         sendOTPButton = view.findViewById(R.id.send_otp_button);
         resendOTPTV = view.findViewById(R.id.resend_otp_timerTV);
         otpVerifyButton = view.findViewById(R.id.otp_verify_button);
+        PIN_errorTV = view.findViewById(R.id.PIN_errorTV);
+        userFormScrollView = view.findViewById(R.id.userFormScrollView);
 
         userFormContainer = view.findViewById(R.id.user_form);
-        userFormNameET = view.findViewById(R.id.nameET);
-        userFormPhoneNumberET = view.findViewById(R.id.phoneNumberET);
-        userFormEmailET = view.findViewById(R.id.emailET);
-        userFormDesignationET = view.findViewById(R.id.user_addressET);
+        userFormNameET = view.findViewById(R.id.text_input_uName);
+        userFormPhoneNumberET = view.findViewById(R.id.text_input_uPhoneNumber);
+        userFormEmailET = view.findViewById(R.id.text_input_uEmail);
+        userFormAddressET = view.findViewById(R.id.text_input_uAddress);
         userFormNewPIN_ET = view.findViewById(R.id.set_pin_field);
         userFormConfirmPIN_ET = view.findViewById(R.id.confirm_pin_field);
         saveButton = view.findViewById(R.id.save_button);
 
         userAddedTV = view.findViewById(R.id.user_addedTV);
+
+        userFormPhoneNumberET.getEditText().addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                if (charSequence.length() == 10) {
+                    validatePhoneNumber();
+                    if (userFormNameET.getEditText().getText().toString().isEmpty())
+                        userFormNameET.requestFocus();
+                    else
+                        userFormEmailET.requestFocus();
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
+
+        userFormNewPIN_ET.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                if (charSequence.length() == 4)
+                    userFormConfirmPIN_ET.requestFocus();
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
 
         newUser = new User();
 
@@ -125,9 +173,13 @@ public class AddUserFragment extends Fragment {
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                if (charSequence.length() == 10)
+                if (charSequence.length() == 10) {
                     sendOTPButton.setVisibility(View.VISIBLE);
-                else
+                    otpVerifyButton.setVisibility(View.GONE);
+                    resendOTPTV.setVisibility(View.GONE);
+                    otpFieldContainer.setVisibility(View.GONE);
+
+                } else
                     sendOTPButton.setVisibility(View.GONE);
             }
 
@@ -141,23 +193,10 @@ public class AddUserFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 User user;
-                if (validateForm()) {
+                if (submitUserInfo(view)) {
                     user = getFormData();
-
-                    userFormNewPIN = userFormNewPIN_ET.getText().toString().trim();
-                    userFormConfirmPIN = userFormConfirmPIN_ET.getText().toString().trim();
-
-                    if (checkNewPassword(userFormNewPIN, userFormConfirmPIN))
-                        signUpCallBacks.onSignUpUser(user);
-                    else {
-                        userFormNewPIN_ET.setBackground(ContextCompat.getDrawable(getActivity(), R.drawable.et_error_bg));
-                        userFormConfirmPIN_ET.setBackground(ContextCompat.getDrawable(getActivity(), R.drawable.et_error_bg));
-                        userFormNewPIN_ET.startAnimation(shakeError());
-                        userFormConfirmPIN_ET.startAnimation(shakeError());
-                    }
-
+                    signUpCallBacks.onSignUpUser(user);
                 }
-
             }
         });
 
@@ -198,8 +237,12 @@ public class AddUserFragment extends Fragment {
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
                 if (charSequence.length() == 4) {
                     if (checkPIN(userFormNewPIN_ET.getText().toString().trim(), userFormConfirmPIN_ET.getText().toString().trim())) {
+                        PIN_errorTV.setVisibility(View.GONE);
                         closeKeyBoard();
                     } else {
+                        userFormNewPIN_ET.setText("");
+                        userFormConfirmPIN_ET.setText("");
+                        PIN_errorTV.setVisibility(View.VISIBLE);
                         userFormNewPIN_ET.startAnimation(shakeError());
                         userFormConfirmPIN_ET.startAnimation(shakeError());
                         userFormConfirmPIN_ET.setBackground(ContextCompat.getDrawable(getActivity(), R.drawable.et_error_bg));
@@ -220,10 +263,10 @@ public class AddUserFragment extends Fragment {
 
     public User getFormData() {
 
-        newUser.setUserName(userFormNameET.getText().toString());
-        newUser.setUserMobileNumber(userFormPhoneNumberET.getText().toString());
-        newUser.setEmailAddress(userFormEmailET.getText().toString());
-        newUser.setPostalAddress(userFormDesignationET.getText().toString());
+        newUser.setUserName(userFormNameET.getEditText().getText().toString());
+        newUser.setUserMobileNumber(userFormPhoneNumberET.getEditText().getText().toString());
+        newUser.setEmailAddress(userFormEmailET.getEditText().getText().toString());
+        newUser.setPostalAddress(userFormAddressET.getEditText().getText().toString());
         newUser.setPIN(userFormNewPIN_ET.getText().toString());
 
         return newUser;
@@ -253,6 +296,8 @@ public class AddUserFragment extends Fragment {
     public void showVerifyButton() {
         otpVerifyButton.setVisibility(View.VISIBLE);
         sendOTPButton.setVisibility(View.GONE);
+        resendOTPTV.setVisibility(View.VISIBLE);
+        setCounterResendOTP(2000, 1000);
         resendOTPTV.setClickable(false);
 
         setCounterResendOTP(20000, 1000);
@@ -267,7 +312,7 @@ public class AddUserFragment extends Fragment {
 
     public void onSaveUserTitleChange(String title) {
 
-        userFormContainer.setVisibility(View.GONE);
+        userFormScrollView.setVisibility(View.GONE);
         userAddedTV.setText(title);
         userAddedTV.setVisibility(View.VISIBLE);
 
@@ -286,10 +331,6 @@ public class AddUserFragment extends Fragment {
         shake.setDuration(500);
         shake.setInterpolator(new CycleInterpolator(7));
         return shake;
-    }
-
-    public void setName(String name) {
-        userFormNameET.setText(name);
     }
 
     public boolean checkNewPassword(String newPassword, String confirmPassword) {
@@ -316,38 +357,6 @@ public class AddUserFragment extends Fragment {
     }
 
 
-    public boolean validateForm() {
-
-        boolean val = true;
-        if (TextUtils.isEmpty(userFormNameET.getText().toString().trim())) {
-            userFormNameET.setHintTextColor(ContextCompat.getColor(getActivity(), R.color.lighter_red));
-            userFormNameET.startAnimation(shakeError());
-            val = false;
-        } else val = true;
-        if (TextUtils.isEmpty(userFormPhoneNumberET.getText().toString().trim())) {
-            userFormPhoneNumberET.setHintTextColor(ContextCompat.getColor(getActivity(), R.color.lighter_red));
-            userFormPhoneNumberET.startAnimation(shakeError());
-            val = false;
-        } else val = true;
-        if (TextUtils.isEmpty(userFormEmailET.getText().toString().trim())) {
-            userFormEmailET.setHintTextColor(ContextCompat.getColor(getActivity(), R.color.lighter_red));
-            userFormEmailET.startAnimation(shakeError());
-            val = false;
-        } else val = true;
-
-        if (TextUtils.isEmpty(userFormNewPIN_ET.getText().toString().trim())) {
-            userFormNewPIN_ET.setHintTextColor(ContextCompat.getColor(getActivity(), R.color.lighter_red));
-            userFormNewPIN_ET.startAnimation(shakeError());
-            val = false;
-        } else val = true;
-        if (TextUtils.isEmpty(userFormConfirmPIN_ET.getText().toString().trim())) {
-            userFormConfirmPIN_ET.setHintTextColor(ContextCompat.getColor(getActivity(), R.color.lighter_red));
-            userFormConfirmPIN_ET.startAnimation(shakeError());
-            val = false;
-        } else val = true;
-        return val;
-    }
-
     public void closeKeyBoard() {
 
         View view = getActivity().getCurrentFocus();
@@ -359,5 +368,96 @@ public class AddUserFragment extends Fragment {
 
     public boolean checkPIN(String newPIN, String confirmPIN) {
         return newPIN.equals(confirmPIN);
+    }
+
+
+    ///////////////////////////////////////////////////////////////
+
+    private boolean validateUserName() {
+
+        String emailET = userFormNameET.getEditText().getText().toString().trim();
+        if (emailET.isEmpty()) {
+            userFormNameET.setError("* Name cant be empty");
+            return false;
+        } else {
+            userFormNameET.setError(null);
+            return true;
+        }
+    }
+
+    private boolean validatePIN() {
+
+        userFormNewPIN = userFormNewPIN_ET.getText().toString().trim();
+        userFormConfirmPIN = userFormConfirmPIN_ET.getText().toString().trim();
+
+        if (userFormNewPIN.isEmpty() || userFormConfirmPIN.isEmpty()) {
+            userFormNewPIN_ET.setBackground(ContextCompat.getDrawable(getActivity(), R.drawable.et_error_bg));
+            userFormConfirmPIN_ET.setBackground(ContextCompat.getDrawable(getActivity(), R.drawable.et_error_bg));
+            userFormNewPIN_ET.startAnimation(shakeError());
+            userFormConfirmPIN_ET.startAnimation(shakeError());
+            Toast.makeText(getActivity(), "Enter your PIN", Toast.LENGTH_SHORT).show();
+            return false;
+        } else if (checkNewPassword(userFormNewPIN, userFormConfirmPIN))
+            return true;
+        else {
+            userFormNewPIN_ET.setBackground(ContextCompat.getDrawable(getActivity(), R.drawable.et_error_bg));
+            userFormConfirmPIN_ET.setBackground(ContextCompat.getDrawable(getActivity(), R.drawable.et_error_bg));
+            userFormNewPIN_ET.startAnimation(shakeError());
+            userFormConfirmPIN_ET.startAnimation(shakeError());
+            Toast.makeText(getActivity(), "Enter your PIN", Toast.LENGTH_SHORT).show();
+            return false;
+
+        }
+    }
+
+    private boolean validatePhoneNumber() {
+        String phoneNumberTemp = userFormPhoneNumberET.getEditText().getText().toString().trim();
+        if (phoneNumberTemp.isEmpty()) {
+            userFormPhoneNumberET.setError("* Phone number cant be empty");
+            return false;
+        } else if (phoneNumberTemp.length() < 10) {
+            userFormPhoneNumberET.setError("* Phone number should be 10 digits");
+            return false;
+        } else {
+            userFormPhoneNumberET.setError(null);
+            return true;
+        }
+
+    }
+
+    private boolean validateUserEmail() {
+        String emailTemp = userFormEmailET.getEditText().getText().toString().trim();
+        if (emailTemp.isEmpty()) {
+            userFormEmailET.setError("* Email cant be empty");
+            return false;
+        } else if (!emailTemp.contains("@")) {
+            userFormEmailET.setError("* Incorrect email address");
+            return false;
+        } else {
+            userFormEmailET.setError(null);
+            return true;
+        }
+    }
+
+    private boolean validateUserPostalAddress() {
+        String adddrtemp = userFormAddressET.getEditText().getText().toString().trim();
+        if (adddrtemp.isEmpty()) {
+            userFormAddressET.setError("* Address cant be empty");
+            return false;
+        } else {
+            userFormAddressET.setError(null);
+            return true;
+        }
+
+    }
+
+    public boolean submitUserInfo(View v) {
+        if (validateUserName() & validateUserPostalAddress() & validatePhoneNumber() & validateUserEmail()
+                & validatePIN()) {
+            Toast.makeText(getActivity(), "VALID", Toast.LENGTH_SHORT).show();
+            return true;
+        } else {
+            return false;
+        }
     }
 }

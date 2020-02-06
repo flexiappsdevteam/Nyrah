@@ -2,9 +2,13 @@ package com.labournet.nyrah.account.ui.SignUpActivity;
 
 import android.animation.LayoutTransition;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
-import android.text.TextUtils;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -14,19 +18,17 @@ import android.view.animation.CycleInterpolator;
 import android.view.animation.TranslateAnimation;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import com.labournet.nyrah.R;
+import com.labournet.nyrah.Utils.EnlivenTextInputLayout;
 import com.labournet.nyrah.Utils.UserSessionManager;
 import com.labournet.nyrah.account.interfaces.SignUpCallBacks;
 import com.labournet.nyrah.account.model.Business;
@@ -34,17 +36,14 @@ import com.labournet.nyrah.account.model.BusinessType;
 
 import java.util.ArrayList;
 
+/**
+ * Fragment class for business registration
+ **/
 public class BusinessRegFragment extends Fragment {
 
     private SignUpCallBacks signUpCallBacks;
 
     private TextView textView;
-    private EditText businessTitle;
-    private EditText phoneNumber;
-    private EditText email;
-    private EditText address;
-    private EditText webAddress;
-    private EditText adminNameET;
 
 
     private Spinner businessTypeSpinner;
@@ -52,14 +51,16 @@ public class BusinessRegFragment extends Fragment {
     private Button confirmButton;
     private Button addUserButton;
 
+    private LinearLayout goBackButton;
+
     //Business details preview
+    private TextView businessTypeTV;
     private TextView businessTitlePreview;
     private TextView businessTypePreview;
     private TextView businessPhoneNumberPreview;
     private TextView businessEmailPreview;
     private TextView businessWebAddressPreview;
     private TextView businessAddressPreview;
-    private TextView businessAdminName;
 
     private LinearLayout rootView;
     private LinearLayout businessDetailsPreview;
@@ -69,6 +70,15 @@ public class BusinessRegFragment extends Fragment {
 
     private String adminNameString;
     private UserSessionManager sessionManager;
+
+    private EnlivenTextInputLayout bTitle;
+    private EnlivenTextInputLayout bPhoneNumberET;
+    private EnlivenTextInputLayout bEmailET;
+    private EnlivenTextInputLayout bPostalAddressET;
+    private EnlivenTextInputLayout bWebAddressET;
+
+    UserSessionManager session = null;
+
 
     @Nullable
     @Override
@@ -80,44 +90,105 @@ public class BusinessRegFragment extends Fragment {
         sessionManager = new UserSessionManager(getActivity());
         newBusiness = new Business();
 
-        businessTitle = view.findViewById(R.id.business_title);
-        phoneNumber = view.findViewById(R.id.business_phoneNumber);
-        email = view.findViewById(R.id.business_email);
-        address = view.findViewById(R.id.business_address);
-        webAddress = view.findViewById(R.id.business_website);
+        session = new UserSessionManager(getActivity());
+
+
+        bTitle = view.findViewById(R.id.text_input_bTitle);
+        bPhoneNumberET = view.findViewById(R.id.text_input_bPhoneNumber);
+        bEmailET = view.findViewById(R.id.text_input_bEmail);
+        bPostalAddressET = view.findViewById(R.id.text_input_bAddress);
+        bWebAddressET = view.findViewById(R.id.text_input_bWebAddress);
+
         textView = view.findViewById(R.id.titleTV);
         businessTypeSpinner = view.findViewById(R.id.businessType_spinner);
-        adminNameET = view.findViewById(R.id.business_administrator);
 
         confirmButton = view.findViewById(R.id.confirm_button);
         addUserButton = view.findViewById(R.id.add_user_Button);
+
+        goBackButton = view.findViewById(R.id.goBack_button);
 
         rootView = view.findViewById(R.id.root);
         businessDetailsPreview = view.findViewById(R.id.businessDetails_preview);
         businessDetailsETFields = view.findViewById(R.id.businessDetailsETFields);
 
+        businessTypeTV = view.findViewById(R.id.businessType_TV);
         businessTitlePreview = view.findViewById(R.id.business_titleTV);
         businessTypePreview = view.findViewById(R.id.business_typeTV);
         businessPhoneNumberPreview = view.findViewById(R.id.business_phoneNumberTV);
         businessEmailPreview = view.findViewById(R.id.business_emailTV);
         businessWebAddressPreview = view.findViewById(R.id.business_webAddressTV);
         businessAddressPreview = view.findViewById(R.id.business_addressTV);
-        businessAdminName = view.findViewById(R.id.business_adminNameTV);
 
         ViewGroup layout = rootView;
         LayoutTransition layoutTransition = layout.getLayoutTransition();
         layoutTransition.enableTransitionType(LayoutTransition.CHANGING);
+
+        goBackButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                builder.setMessage("Are you sure to delete current product key and enter a new one ?")
+                        .setTitle("Enter new product key")
+                        .setPositiveButton("Enter new key", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                session.clearAll();
+                                session.signUpCompleted("NO");
+                                Intent launcher = new Intent(getActivity(), SignUpActivity.class);
+                                startActivity(launcher);
+                            }
+                        })
+                        .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+
+                            }
+                        });
+                AlertDialog alertDialog = builder.create();
+                alertDialog.show();
+            }
+        });
+
+        bPhoneNumberET.getEditText().addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                if (charSequence.length() == 10) {
+                    validateBusinessPhoneNumber();
+                    bEmailET.getEditText().requestFocus();
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
+
+        bPhoneNumberET.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View view, boolean b) {
+                if (!b) {
+                    if (bPhoneNumberET.getEditText().length() != 10) {
+                        bPhoneNumberET.getEditText().setTextColor(getContext().getColor(R.color.lighter_red));
+                    }
+                }
+            }
+        });
+
 
         confirmButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Business business;
 
-                if (validateForm()) {
+                if (submitBusinessInfo(view)) {
                     business = getFormData();
-
                     signUpCallBacks.onConfirmBusinessReg(business);
-                    sessionManager.setBusinessAdministratorName(business.getAdminName());
                 }
 
             }
@@ -140,41 +211,6 @@ public class BusinessRegFragment extends Fragment {
         return view;
     }
 
-    public boolean validateForm() {
-
-        boolean val = true;
-        if (TextUtils.isEmpty(businessTitle.getText().toString().trim())) {
-            businessTitle.setHintTextColor(ContextCompat.getColor(getActivity(), R.color.lighter_red));
-            businessTitle.startAnimation(shakeError());
-            val = false;
-        } else val = true;
-        if (TextUtils.isEmpty(businessAdminName.getText().toString().trim())) {
-            businessAdminName.setHintTextColor(ContextCompat.getColor(getActivity(), R.color.lighter_red));
-            businessAdminName.startAnimation(shakeError());
-            val = false;
-        } else val = true;
-        if (TextUtils.isEmpty(email.getText().toString().trim())) {
-            email.setHintTextColor(ContextCompat.getColor(getActivity(), R.color.lighter_red));
-            email.startAnimation(shakeError());
-            val = false;
-        } else val = true;
-        if (TextUtils.isEmpty(phoneNumber.getText().toString().trim())) {
-            phoneNumber.setHintTextColor(ContextCompat.getColor(getActivity(), R.color.lighter_red));
-            phoneNumber.startAnimation(shakeError());
-            val = false;
-        } else val = true;
-        if (TextUtils.isEmpty(adminNameET.getText().toString().trim())) {
-            adminNameET.setHintTextColor(ContextCompat.getColor(getActivity(), R.color.lighter_red));
-            adminNameET.startAnimation(shakeError());
-            val = false;
-        } else val = true;
-        if (TextUtils.isEmpty(webAddress.getText().toString().trim())) {
-            webAddress.setHintTextColor(ContextCompat.getColor(getActivity(), R.color.lighter_red));
-            webAddress.startAnimation(shakeError());
-            val = false;
-        } else val = true;
-        return val;
-    }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
@@ -191,17 +227,16 @@ public class BusinessRegFragment extends Fragment {
     private Business getFormData() {
 
 
-        newBusiness.setName(businessTitle.getText().toString());
-        newBusiness.setEmailAddress(email.getText().toString());
-        newBusiness.setPhoneNumber(phoneNumber.getText().toString());
-        newBusiness.setType((BusinessType) businessTypeSpinner.getSelectedItem());
-        newBusiness.setAdminName(adminNameET.getText().toString());
-        newBusiness.setWebAddress(webAddress.getText().toString());
-        newBusiness.setPostalAddress(address.getText().toString());
+        newBusiness.setName(bTitle.getEditText().getText().toString());
+        newBusiness.setEmailAddress(bEmailET.getEditText().getText().toString());
+        newBusiness.setPhoneNumber(bPhoneNumberET.getEditText().getText().toString());
+        newBusiness.setType(new BusinessType("1", businessTypeTV.getText().toString()));
+        newBusiness.setWebAddress(bWebAddressET.getEditText().getText().toString());
+        newBusiness.setPostalAddress(bPostalAddressET.getEditText().getText().toString());
 
-        adminNameString = adminNameET.getText().toString().trim();
         return newBusiness;
     }
+
 
     public Business getNewBusinessData() {
         return newBusiness;
@@ -251,7 +286,6 @@ public class BusinessRegFragment extends Fragment {
         businessTitlePreview.setText(business.getName());
         businessTypePreview.setText(business.getType());
         businessPhoneNumberPreview.setText(business.getPhoneNumber());
-        businessAdminName.setText(business.getAdminName());
         businessEmailPreview.setText(business.getEmailAddress());
         businessWebAddressPreview.setText(business.getWebAddress());
         businessAddressPreview.setText(business.getPostalAddress());
@@ -272,9 +306,16 @@ public class BusinessRegFragment extends Fragment {
         textView.setText("Enter your Business details");
         textView.setTextSize(25);
 
-        ArrayAdapter<BusinessType> adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_item, businessTypes);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        businessTypeSpinner.setAdapter(adapter);
+//        HintAdapter hintAdapter = new HintAdapter(getActivity(), android.R.layout.simple_spinner_item, businessTypes);
+//        hintAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+//        businessTypeSpinner.setAdapter(hintAdapter);
+//        businessTypeSpinner.setSelection(businessTypes.size() - 1);
+
+        businessTypeSpinner.setVisibility(View.GONE);
+        businessTypeTV.setText(businessTypes.get(0).getName());
+        businessTypeTV.setVisibility(View.VISIBLE);
+
+
         businessTypeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
@@ -316,5 +357,82 @@ public class BusinessRegFragment extends Fragment {
     public static void hideKeyboardFrom(Context context, View view) {
         InputMethodManager imm = (InputMethodManager) context.getSystemService(Activity.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+    }
+
+
+    ///////////////////////////////////////////////////////////////
+
+    private boolean validateBusinessTitle() {
+
+        String emailET = bTitle.getEditText().getText().toString().trim();
+        if (emailET.isEmpty()) {
+            bTitle.setError("* Business name cant be empty");
+            return false;
+        } else {
+            bTitle.setError(null);
+            return true;
+        }
+    }
+
+    private boolean validateBusinessPhoneNumber() {
+        String phoneNumberTemp = bPhoneNumberET.getEditText().getText().toString().trim();
+        if (phoneNumberTemp.isEmpty()) {
+            bPhoneNumberET.setError("* Phone number cant be empty");
+            return false;
+        } else if (phoneNumberTemp.length() < 10) {
+            bPhoneNumberET.setError("* Phone number should be 10 digits");
+            return false;
+        } else {
+            bPhoneNumberET.setError(null);
+            return true;
+        }
+
+    }
+
+    private boolean validateBusinessEmail() {
+        String emailTemp = bEmailET.getEditText().getText().toString().trim();
+        if (emailTemp.isEmpty()) {
+            bEmailET.setError("* Email cant be empty");
+            return false;
+        } else if (!emailTemp.contains("@")) {
+            bEmailET.setError("* Incorrect email address");
+            return false;
+        } else {
+            bEmailET.setError(null);
+            return true;
+        }
+    }
+
+    private boolean validateBusinessWebAddress() {
+        String webaddrtemp = bWebAddressET.getEditText().getText().toString().trim();
+        if (webaddrtemp.isEmpty()) {
+            bWebAddressET.setError("* Website address cant be empty");
+            return false;
+        } else {
+            bWebAddressET.setError(null);
+            return true;
+        }
+
+    }
+
+    private boolean validateBusinessPostalAddress() {
+        String adddrtemp = bPostalAddressET.getEditText().getText().toString().trim();
+        if (adddrtemp.isEmpty()) {
+            bPostalAddressET.setError("* Address cant be empty");
+            return false;
+        } else {
+            bPostalAddressET.setError(null);
+            return true;
+        }
+
+    }
+
+    public boolean submitBusinessInfo(View v) {
+        if (validateBusinessTitle() & validateBusinessPhoneNumber() & validateBusinessEmail() & validateBusinessWebAddress()
+                & validateBusinessPostalAddress()) {
+            return true;
+        } else {
+            return false;
+        }
     }
 }

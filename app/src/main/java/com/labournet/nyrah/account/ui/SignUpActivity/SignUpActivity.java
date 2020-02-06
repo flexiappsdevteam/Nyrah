@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
@@ -85,6 +86,9 @@ public class SignUpActivity extends BaseActivity implements SignUpCallBacks {
     String OTP;
     String users;
 
+    long backPressedTime;
+
+
     boolean isValidProductKey;
 
     UserSessionManager session = null;
@@ -154,7 +158,6 @@ public class SignUpActivity extends BaseActivity implements SignUpCallBacks {
                 .replace(R.id.businessReg_container, businessRegFragment)
                 .replace(R.id.add_user_container, addUserFragment)
                 .commit();
-
 
         productKey = session.getProductKey();
         mobNo = session.getUserMobileNumber();
@@ -290,9 +293,7 @@ public class SignUpActivity extends BaseActivity implements SignUpCallBacks {
                                 value = true;
                                 isValidProductKey = true;
                                 session.businessAdded("NO");
-                                businessTypes = new ArrayList<>(50);
-                                businessTypes.add(new BusinessType("0", "-- Select --"));
-
+                                businessTypes = new ArrayList<>(1);
                                 projectID = getTagValue(responseProductKeyVerification, "projectId");
                                 projectName = getTagValue(responseProductKeyVerification, "projectName");
                                 users = getTagValue(responseProductKeyVerification, "users");
@@ -320,6 +321,7 @@ public class SignUpActivity extends BaseActivity implements SignUpCallBacks {
                                                         eachElement.getElementsByTagName("name").item(0).getTextContent()));
                                             }
                                         }
+                                        businessTypes.add(new BusinessType("hint", "Select"));
 
                                         runOnUiThread(new Runnable() {
                                             @Override
@@ -426,6 +428,40 @@ public class SignUpActivity extends BaseActivity implements SignUpCallBacks {
         addUserLayout.setVisibility(View.VISIBLE);
     }
 
+    @Override
+    public void onBackPressed() {
+        if (backPressedTime + 2000 > System.currentTimeMillis()) {
+            super.onBackPressed();
+            finish();
+            return;
+
+        } else {
+            Toast.makeText(this, "Press again to exit", Toast.LENGTH_SHORT).show();
+            backPressedTime = System.currentTimeMillis();
+        }
+
+//        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+//        builder.setMessage("Press Confirm to reset application")
+//                .setTitle("Reset application")
+//                .setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
+//                    @Override
+//                    public void onClick(DialogInterface dialogInterface, int i) {
+//                        session.clearAll();
+//                        session.signUpCompleted("NO");
+//                        Intent launcher = new Intent(SignUpActivity.this, LauncherActivity.class);
+//                        startActivity(launcher);
+//                    }
+//                })
+//                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+//                    @Override
+//                    public void onClick(DialogInterface dialogInterface, int i) {
+//
+//                    }
+//                });
+//        AlertDialog alertDialog = builder.create();
+//        alertDialog.hide();
+    }
+
     //SEND BUSINESS AND USER DATA TO SERVER
     public void sendRegistrationData(Business newBusiness, User newUser) {
         try {
@@ -460,6 +496,9 @@ public class SignUpActivity extends BaseActivity implements SignUpCallBacks {
 
             } else {
 
+                showToast(newBusiness.getType());
+                Log.e("TYPE", newBusiness.getType() + "\n\n" +
+                        newBusiness.getBusinessTypeID());
 
 //                showToast("no business");
                 signUpFormBody = new FormBody.Builder()
@@ -467,7 +506,7 @@ public class SignUpActivity extends BaseActivity implements SignUpCallBacks {
                         .add("saveB", "Y")
                         .add("saveU", "Y")
                         .add("bName", newBusiness.getName())
-                        .add("bType", newBusiness.getType())
+                        .add("bType", newBusiness.getBusinessTypeID())
                         .add("email", newBusiness.getEmailAddress())
                         .add("mob", newBusiness.getPhoneNumber())
                         .add("addr", newBusiness.getPostalAddress())
@@ -684,7 +723,6 @@ public class SignUpActivity extends BaseActivity implements SignUpCallBacks {
         newBusiness = new Business();
         newBusiness = business;
         businessRegFragment.updateBusinessPreview(newBusiness);
-        addUserFragment.setName(newBusiness.getAdminName());
         userSession.saveBusinessInfo(newBusiness);
     }
 

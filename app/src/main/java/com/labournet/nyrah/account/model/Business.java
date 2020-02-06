@@ -8,7 +8,6 @@ public class Business {
     String emailAddress;
     String webAddress;
     String postalAddress;
-    String adminName;
 
     public Business(String name, BusinessType type, String phoneNumber, String emailAddress, String webAddress, String postalAddress) {
         this.name = name;
@@ -22,20 +21,16 @@ public class Business {
     public Business() {
     }
 
+    public String getBusinessTypeID() {
+        return type.getId();
+    }
+
     public String getBusinessID() {
         return businessID;
     }
 
     public void setBusinessID(String businessID) {
         this.businessID = businessID;
-    }
-
-    public String getAdminName() {
-        return adminName;
-    }
-
-    public void setAdminName(String adminName) {
-        this.adminName = adminName;
     }
 
     public String getPostalAddress() {
