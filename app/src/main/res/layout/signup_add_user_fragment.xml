@@ -173,7 +173,7 @@
                 android:textSize="25sp"
                 android:textStyle="bold" />
 
-            <com.labournet.nyrah.Utils.EnlivenTextInputLayout
+            <com.labournet.neostar.Utils.EnlivenTextInputLayout
                 android:id="@+id/text_input_uName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -189,9 +189,9 @@
                     android:hint="@string/name"
                     android:inputType="textPersonName"
                     android:paddingTop="10dp" />
-            </com.labournet.nyrah.Utils.EnlivenTextInputLayout>
+            </com.labournet.neostar.Utils.EnlivenTextInputLayout>
 
-            <com.labournet.nyrah.Utils.EnlivenTextInputLayout
+            <com.labournet.neostar.Utils.EnlivenTextInputLayout
                 android:id="@+id/text_input_uAddress"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -207,9 +207,9 @@
                     android:hint="@string/address"
                     android:inputType="textPostalAddress"
                     android:paddingTop="10dp" />
-            </com.labournet.nyrah.Utils.EnlivenTextInputLayout>
+            </com.labournet.neostar.Utils.EnlivenTextInputLayout>
 
-            <com.labournet.nyrah.Utils.EnlivenTextInputLayout
+            <com.labournet.neostar.Utils.EnlivenTextInputLayout
                 android:id="@+id/text_input_uPhoneNumber"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -226,9 +226,9 @@
                     android:inputType="phone"
                     android:maxLength="10"
                     android:paddingTop="10dp" />
-            </com.labournet.nyrah.Utils.EnlivenTextInputLayout>
+            </com.labournet.neostar.Utils.EnlivenTextInputLayout>
 
-            <com.labournet.nyrah.Utils.EnlivenTextInputLayout
+            <com.labournet.neostar.Utils.EnlivenTextInputLayout
                 android:id="@+id/text_input_uEmail"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -244,7 +244,7 @@
                     android:hint="@string/email"
                     android:inputType="textEmailAddress"
                     android:paddingTop="10dp" />
-            </com.labournet.nyrah.Utils.EnlivenTextInputLayout>
+            </com.labournet.neostar.Utils.EnlivenTextInputLayout>
 
             <TextView
                 android:id="@+id/PIN_errorTV"
