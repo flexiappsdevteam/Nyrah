@@ -50,7 +50,7 @@
 
         </LinearLayout>
 
-        <com.labournet.nyrah.Utils.KeyboardView
+        <com.labournet.neo.nyrah.Utils.KeyboardView
             android:id="@+id/pin_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />

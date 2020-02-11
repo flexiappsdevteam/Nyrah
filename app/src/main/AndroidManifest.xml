@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:dist="http://schemas.android.com/apk/distribution"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.labournet.nyrah">
+    package="com.labournet.neo.nyrah">
 
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
@@ -27,7 +27,7 @@
         tools:ignore="GoogleAppIndexingWarning">
 
         <activity
-            android:name="com.labournet.nyrah.account.ui.LoginActivity.LauncherActivity"
+            android:name="com.labournet.neo.nyrah.account.ui.LoginActivity.LauncherActivity"
             android:noHistory="true"
             android:screenOrientation="portrait">
             <intent-filter>
@@ -37,27 +37,27 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.labournet.nyrah.FlashActivity"
+            android:name="com.labournet.neo.nyrah.FlashActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.labournet.nyrah.Utils.BaseActivity"
+            android:name="com.labournet.neo.nyrah.Utils.BaseActivity"
             android:noHistory="true"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.labournet.nyrah.account.ui.SignUpActivity.SignUpActivity"
+            android:name="com.labournet.neo.nyrah.account.ui.SignUpActivity.SignUpActivity"
             android:noHistory="true"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.labournet.nyrah.home.ui.HomeActivity"
+            android:name="com.labournet.neo.nyrah.home.ui.HomeActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
             android:noHistory="true" />
         <activity
-            android:name="com.labournet.nyrah.account.ui.LoginActivity.LoginActivity"
+            android:name="com.labournet.neo.nyrah.account.ui.LoginActivity.LoginActivity"
             android:noHistory="true"
             android:screenOrientation="portrait"
             android:theme="@style/FullscreenTheme" />
 
-        <receiver android:name="com.labournet.nyrah.Utils.NetworkChangeReceiver">
+        <receiver android:name="com.labournet.neo.nyrah.Utils.NetworkChangeReceiver">
             <intent-filter>
                 <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
                 <action android:name="android.net.wifi.WIFI_STATE_CHANGED" />
