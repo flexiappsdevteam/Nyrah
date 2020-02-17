@@ -25,9 +25,9 @@
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true"
         tools:ignore="GoogleAppIndexingWarning">
-
+        <activity android:name=".account.ui.SignUpActivity.AddUserActivity"></activity>
         <activity
-            android:name="com.labournet.neo.nyrah.account.ui.LoginActivity.LauncherActivity"
+            android:name=".account.ui.LoginActivity.LauncherActivity"
             android:noHistory="true"
             android:screenOrientation="portrait">
             <intent-filter>
@@ -37,33 +37,32 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.labournet.neo.nyrah.FlashActivity"
+            android:name=".FlashActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.labournet.neo.nyrah.Utils.BaseActivity"
+            android:name=".Utils.BaseActivity"
             android:noHistory="true"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.labournet.neo.nyrah.account.ui.SignUpActivity.SignUpActivity"
+            android:name=".account.ui.SignUpActivity.SignUpActivity"
             android:noHistory="true"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.labournet.neo.nyrah.home.ui.HomeActivity"
+            android:name=".home.ui.HomeActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
             android:noHistory="true" />
         <activity
-            android:name="com.labournet.neo.nyrah.account.ui.LoginActivity.LoginActivity"
+            android:name=".account.ui.LoginActivity.LoginActivity"
             android:noHistory="true"
             android:screenOrientation="portrait"
             android:theme="@style/FullscreenTheme" />
 
-        <receiver android:name="com.labournet.neo.nyrah.Utils.NetworkChangeReceiver">
+        <receiver android:name=".Utils.NetworkChangeReceiver">
             <intent-filter>
                 <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
                 <action android:name="android.net.wifi.WIFI_STATE_CHANGED" />
             </intent-filter>
         </receiver>
-
     </application>
 
 </manifest>
