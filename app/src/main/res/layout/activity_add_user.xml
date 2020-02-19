@@ -10,7 +10,7 @@
     android:focusableInTouchMode="true"
     android:gravity="center"
     android:orientation="vertical"
-    tools:context=".account.ui.SignUpActivity.AddUserActivity">
+    tools:context=".account.ui.SignUpActivity.user.AddUserActivity">
 
     <FrameLayout
         android:id="@+id/add_user_container2"

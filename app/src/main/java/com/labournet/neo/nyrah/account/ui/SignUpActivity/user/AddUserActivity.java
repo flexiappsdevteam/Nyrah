@@ -1,15 +1,17 @@
-package com.labournet.neo.nyrah.account.ui.SignUpActivity;
+package com.labournet.neo.nyrah.account.ui.SignUpActivity.user;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.telephony.TelephonyManager;
+import android.text.Html;
 import android.util.Log;
 import android.widget.FrameLayout;
 
-import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AlertDialog;
 import androidx.core.app.ActivityCompat;
 
 import com.labournet.neo.nyrah.R;
@@ -53,6 +55,7 @@ public class AddUserActivity extends BaseActivity implements SignUpAddUserCallBa
     String addUserValue = "no";
     private SignUpCallBacks signUpCallBacks;
     UserSessionManager session = null;
+    private boolean confirm = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,9 +88,11 @@ public class AddUserActivity extends BaseActivity implements SignUpAddUserCallBa
     public void onSignUpUser(User user) {
         newUser = new User();
         newUser = user;
+        newBusiness = session.getBusinessInfo();
         sendRegistrationData(newBusiness, newUser);
-        showToast("User added");
         addUserFragment2.onSaveUserTitleChange("User added");
+
+        //To get and save the mobile number at login page
         user.setUserMobileNumber("");
         userSession.UserLoginSession(user, "PROJECT");
     }
@@ -95,7 +100,6 @@ public class AddUserActivity extends BaseActivity implements SignUpAddUserCallBa
     public void sendRegistrationData(Business newBusiness, User newUser) {
         try {
 
-            showToast("Send Reg data");
             //CREATE URL
             final HttpUrl url = new HttpUrl.Builder()
                     .scheme("https")
@@ -125,8 +129,7 @@ public class AddUserActivity extends BaseActivity implements SignUpAddUserCallBa
 
             } else {
 
-                showToast(newBusiness.getType());
-                Log.e("TYPE", newBusiness.getType() + "\n\n" +
+                Log.e("TYPE", newBusiness.getBusinessTypeName() + "\n\n" +
                         newBusiness.getBusinessTypeID());
 
 //                showToast("no business");
@@ -210,6 +213,34 @@ public class AddUserActivity extends BaseActivity implements SignUpAddUserCallBa
         addUserFragment2.showVerifyButton();
     }
 
+    @Override
+    public void onBackPressed() {
+        if (!confirm) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setMessage(Html.fromHtml(getResources().getString(R.string.exit_message_signUp_form_cdata)))
+                    .setIcon(R.drawable.ic_exit)
+                    .setTitle(R.string.exit_application)
+                    .setPositiveButton(Html.fromHtml(getResources().getString(R.string.exit_cdata)), new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            confirm = true;
+                            onBackPressed();
+                        }
+                    })
+                    .setNegativeButton(Html.fromHtml(getResources().getString(R.string.cancel_cdata)), new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            confirm = false;
+                        }
+                    });
+            AlertDialog alertDialog = builder.create();
+            alertDialog.show();
+        } else {
+            super.onBackPressed();
+            finish();
+            return;
+        }
+    }
 
     public boolean isPhoneNumberValid(String phoneNumber) {
         return phoneNumber.length() == 10;

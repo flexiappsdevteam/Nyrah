@@ -11,7 +11,7 @@
     android:focusableInTouchMode="true"
     android:gravity="center"
     android:orientation="vertical"
-    tools:context=".account.ui.SignUpActivity.SignUpActivity">
+    tools:context=".account.ui.SignUpActivity.business.SignUpActivity">
 
     <FrameLayout
         android:id="@+id/productKey_container"

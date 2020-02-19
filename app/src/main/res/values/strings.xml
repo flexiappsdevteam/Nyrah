@@ -35,6 +35,16 @@
     <string name="et_hint_business_phoneNumber">Phone number</string>
     <string name="et_hint_web_address">Web address</string>
 
+    <string name="exit_message_signUp_form">Press <b>Exit</b> to quit the application.\nPress <b>Cancel</b> to continue registration.</string>
+    <string name="exit_application">Exit application</string>
+    <string name="exit">Exit</string>
+    <string name="cancel">Cancel</string>
+
+    <string name="exit_message_signUp_form_cdata"><![CDATA[Press <b><font color=#A3084F>Exit</font></b> to quit the application.<br/>
+                 Press <b><font color=#1C8F08>Cancel</font></b> to continue the registration process.]]></string>
+    <string name="exit_cdata"><![CDATA[<b><font color=#A3084F>Exit</font><b/>]]></string>
+    <string name="cancel_cdata"><![CDATA[<b><font color=#1C8F08>Cancel</font><b/>]]></string>
+
     <string name="submit">Submit</string>
     <string name="reset_application">Reset application</string>
     <string name="sign_up">SignUp</string>
