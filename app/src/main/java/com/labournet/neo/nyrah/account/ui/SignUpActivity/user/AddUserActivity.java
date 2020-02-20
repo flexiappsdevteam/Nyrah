@@ -5,12 +5,21 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.telephony.TelephonyManager;
 import android.text.Html;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.CompoundButton;
 import android.widget.FrameLayout;
+import android.widget.Switch;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.app.ActivityCompat;
 
@@ -41,6 +50,9 @@ import static com.labournet.neo.nyrah.Utils.Constants.VERIFY;
 
 public class AddUserActivity extends BaseActivity implements SignUpAddUserCallBacks {
 
+    public static final int MOBILE_DATA_REQUEST_CODE = 1117;
+    public static final int WIFI_REQUEST_CODE = 1118;
+
     FrameLayout addUserFragmentC;
     AddUserFragment addUserFragment2;
     String phNo = "";
@@ -57,12 +69,16 @@ public class AddUserActivity extends BaseActivity implements SignUpAddUserCallBa
     UserSessionManager session = null;
     private boolean confirm = false;
 
+    Switch mobileDataSwitch;
+    Switch wifiSwitch;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_user);
 
         addUserFragmentC = findViewById(R.id.add_user_container2);
+
         userSession = new UserSessionManager(getApplicationContext());
         session = new UserSessionManager(getApplicationContext());
 
@@ -81,7 +97,6 @@ public class AddUserActivity extends BaseActivity implements SignUpAddUserCallBa
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.add_user_container2, addUserFragment2).commit();
 
-
     }
 
     @Override
@@ -90,7 +105,6 @@ public class AddUserActivity extends BaseActivity implements SignUpAddUserCallBa
         newUser = user;
         newBusiness = session.getBusinessInfo();
         sendRegistrationData(newBusiness, newUser);
-        addUserFragment2.onSaveUserTitleChange("User added");
 
         //To get and save the mobile number at login page
         user.setUserMobileNumber("");
@@ -132,7 +146,6 @@ public class AddUserActivity extends BaseActivity implements SignUpAddUserCallBa
                 Log.e("TYPE", newBusiness.getBusinessTypeName() + "\n\n" +
                         newBusiness.getBusinessTypeID());
 
-//                showToast("no business");
                 signUpFormBody = new FormBody.Builder()
                         .add("proj", session.getProjectID())
                         .add("saveB", "Y")
@@ -156,9 +169,6 @@ public class AddUserActivity extends BaseActivity implements SignUpAddUserCallBa
 
             }
 
-
-//        getMenu();
-
             //CREATE A REQUEST AND ADD DATA
             Request request = new Request.Builder()
                     .post(signUpFormBody)
@@ -169,30 +179,48 @@ public class AddUserActivity extends BaseActivity implements SignUpAddUserCallBa
                 @Override
                 public void onFailure(Call call, IOException e) {
                     //RETRY
-                    showToast("SignUp failed !");
                     session.signUpCompleted("NO");
                     session.businessAdded("NO");
                     session.userAdded("NO");
 
-                    Log.i("DDDD", url.toString());
+                    Log.i("SendRegistrationData", url.toString());
 
                     //CHECK INTERNET CONNECTION
+
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            showNoInternetDialog();
+                        }
+                    });
                 }
 
                 @Override
                 public void onResponse(Call call, Response response) throws IOException {
 
-                    Log.i("DDDD", url.toString());
+                    Log.i("SendRegistrationData", url.toString());
 
                     //GET RESPONSE
                     String responseSendSignUpData = response.body().string();
 
                     if (userRegistration) {
                         session.userAdded("YES");
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                addUserFragment2.onSaveUserTitleChange("User added");
+                            }
+                        });
                     } else if (userAndBusinessRegistration) {
                         session.userAdded("YES");
                         session.businessAdded("YES");
                         session.signUpCompleted("YES");
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                addUserFragment2.onSaveUserTitleChange("Business and User registration completed");
+                            }
+                        });
                     }
 
                     //NEXT INTENT
@@ -319,5 +347,56 @@ public class AddUserActivity extends BaseActivity implements SignUpAddUserCallBa
         }
 
         return phoneNumber;
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == MOBILE_DATA_REQUEST_CODE || requestCode == WIFI_REQUEST_CODE) {
+            if (checkNetworkConnection()) {
+
+            }
+        }
+    }
+
+    public boolean checkNetworkConnection() {
+        ConnectivityManager connMgr = (ConnectivityManager) getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
+        return (networkInfo != null && networkInfo.isConnected());
+    }
+
+    public void showNoInternetDialog() {
+
+        //before inflating the custom alert dialog layout, we will get the current activity viewGroup
+        ViewGroup viewGroup = findViewById(android.R.id.content);
+
+        //then we will inflate the custom alert dialog xml that we created
+        View dialogView = LayoutInflater.from(this).inflate(R.layout.no_internet_dialog, viewGroup, false);
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setView(dialogView);
+
+        mobileDataSwitch = dialogView.findViewById(R.id.mobile_data_switch);
+        wifiSwitch = dialogView.findViewById(R.id.wifi_switch);
+
+        final AlertDialog alertDialog = builder.create();
+        alertDialog.show();
+
+        mobileDataSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                startActivityForResult(new Intent(Settings.ACTION_NETWORK_OPERATOR_SETTINGS), MOBILE_DATA_REQUEST_CODE);
+                alertDialog.hide();
+            }
+        });
+
+        wifiSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                startActivityForResult(new Intent(Settings.ACTION_WIFI_SETTINGS), WIFI_REQUEST_CODE);
+                alertDialog.hide();
+            }
+        });
+
     }
 }
